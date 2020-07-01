@@ -1,32 +1,50 @@
 import React, { Component } from 'react';
 import { Input, Button, List } from 'antd'
 import 'antd/dist/antd.css'
+import store from './store/index'
 
-const data=[
-  '早八点开晨会分配今天代码任务',
-  '早9点需求沟通会',
-  '早10点开晨会分配今天代码任务',
-]
 class TodoList extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-
-    }
+    this.state = store.getState()
+    // console.log(store.getState())
+    this.storeChange = this.storeChange.bind(this)
+    this.addTodo = this.addTodo.bind(this)
+    store.subscribe(this.storeChange)
   }
+  onChangeInput(e){
+    const action = {
+      type:'CHANGE_VALUE',
+      value: e.target.value
+    }
+    store.dispatch(action)
+  }
+  addTodo(){
+    const action = {
+      type:'ADD_TODO',
+      item: this.state.inputValue
+    }
+    store.dispatch(action)
+  }
+  storeChange(){
+    this.setState(store.getState())
+  }
+
   render() {
+    let {inputValue,list} = this.state
     return (<div style={{margin: '10px'}}>
       <div>
         <Input
-          placeholder='write something'
+          placeholder={inputValue}
+          onChange={(e)=>{this.onChangeInput(e)}}
           style={{ width: '250px',marginRight:'10px' }}
         />
-        <Button type='primary'>增加</Button>
+        <Button onClick={()=>{this.addTodo()}} type='primary'>增加</Button>
         <div style={{margin:'10px',width:'300px'}}>
           <List 
             bordered 
-            dataSource={data}
-            renderItem={item =>(<List.Item>item</List.Item>)}
+            dataSource={list}
+            renderItem={item =>(<List.Item>{item}</List.Item>)}
           />
         </div>
       </div>
