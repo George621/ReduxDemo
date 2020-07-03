@@ -1,3 +1,5 @@
+import {CHANGE_VALUE, ADD_TODO, DEL_TODO} from './actions'
+
 const initState = {
   inputValue:'write somthing',
   list:[
@@ -9,13 +11,17 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case 'CHANGE_VALUE':
+    case CHANGE_VALUE:
       return {...state, inputValue: action.value}
-    case'ADD_TODO':
-      let list = state.list.concat(state.inputValue)
-      
-      console.log(list,'----')
-      return {...state, list:list}
+    case ADD_TODO:
+      let newState = JSON.parse(JSON.stringify(state))
+      newState.list.push(state.inputValue)
+      newState.inputValue=''
+      return newState
+    case DEL_TODO:
+      let newOtherState = JSON.parse(JSON.stringify(state))
+      newOtherState.list.splice(action.index, 1)
+      return newOtherState
     default:
       break;
   }
