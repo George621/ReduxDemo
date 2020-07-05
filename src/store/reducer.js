@@ -1,4 +1,4 @@
-import {CHANGE_VALUE, ADD_TODO, DEL_TODO} from './actions'
+import {CHANGE_VALUE, ADD_TODO, DEL_TODO} from './actionTypes'
 
 const initState = {
   inputValue:'write somthing',
