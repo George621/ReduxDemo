@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Input, Button, List } from 'antd'
 import 'antd/dist/antd.css'
 import store from './store/index'
-import { CHANGE_VALUE, ADD_TODO, DEL_TODO } from './store/actionTypes'
-import { changeInputAction, addTodoAction, delItemAction } from './store/actionCreators'
+import { changeInputAction, addTodoAction, delItemAction, getListAction } from './store/actionCreators'
+import TodoListUi from './TodoListUi'
+import axios from 'axios'
 class TodoList extends Component {
   constructor(props) {
     super(props)
     this.state = store.getState()
     this.storeChange = this.storeChange.bind(this)
     this.addTodo = this.addTodo.bind(this)
+    this.onChangeInput = this.onChangeInput.bind(this)
     store.subscribe(this.storeChange)
   }
   onChangeInput(e) {
@@ -28,30 +29,26 @@ class TodoList extends Component {
     const action = delItemAction(index)
     store.dispatch(action)
   }
+  componentDidMount(){
+    axios.get('https://www.easy-mock.com/mock/5f088cf93d75a643f8c853b7/example/getlist').then(
+      (res)=>{
+      let data = res.data.data.list
+      let actions = getListAction(data)
+      store.dispatch(actions)
+    }
+    )
+  }
   render() {
     let { inputValue, list } = this.state
-    return (<div style={{ margin: '10px' }}>
-      <div>
-        <Input
-          placeholder={inputValue}
-          value={this.state.inputValue}
-          onChange={(e) => { this.onChangeInput(e) }}
-          style={{ width: '250px', marginRight: '10px' }}
-        />
-        <Button onClick={() => { this.addTodo() }} type='primary'>增加</Button>
-        <div style={{ margin: '10px', width: '300px' }}>
-          <List
-            bordered
-            dataSource={list}
-            renderItem={
-              (item, index) => (<List.Item onClick={() => this.delItem(index)}
-              >
-                {item}
-              </List.Item>)}
-          />
-        </div>
-      </div>
-    </div>)
+    return (
+      <TodoListUi
+        inputValue={inputValue}
+        list={list}
+        onChangeInput={this.onChangeInput}
+        addTodo={this.addTodo}
+        delItem={this.delItem}
+      />
+    )
   }
 }
 
