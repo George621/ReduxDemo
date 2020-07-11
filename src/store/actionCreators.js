@@ -1,4 +1,5 @@
-import { GET_MY_LIST,CHANGE_VALUE, ADD_TODO, DEL_TODO, GET_LIST } from './actionTypes'
+import { CHANGE_VALUE, ADD_TODO, DEL_TODO, GET_LIST, PLUS_COUNT } from './actionTypes'
+// GET_MY_LIST  saga 时候加入
 import axios from 'axios'
 
 export const changeInputAction = (val) => ({
@@ -20,6 +21,10 @@ export const getListAction = (list) => ({
   list
 })
 
+export const plusCountAction =()=>({
+  type: PLUS_COUNT
+})
+
 export const getTodoList = () => {
   return (dispatch) => {
     axios.get('https://www.easy-mock.com/mock/5f088cf93d75a643f8c853b7/example/getlist').then(
@@ -31,9 +36,9 @@ export const getTodoList = () => {
   }
 }
 
-export const getMyListAction =(list)=>{
-  return {
-    type:GET_MY_LIST,
-    list
-  }
-}
+// export const getMyListAction =(list)=>{
+//   return {
+//     type:GET_MY_LIST,
+//     list
+//   }
+// }
